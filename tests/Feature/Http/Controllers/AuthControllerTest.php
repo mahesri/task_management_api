@@ -10,7 +10,7 @@ class AuthControllerTest extends \Tests\TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\DataProvider('user_data')]
-    public function test_storingUser($data)
+    public function test_registerNewUser($data)
     {
 
         $response = $this->post('/api/register', $data);

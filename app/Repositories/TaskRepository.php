@@ -6,52 +6,56 @@ use App\Models\Task;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
-
 class TaskRepository implements TaskRepositoryInterface
 {
 
-    public function getAll()
+    public function getAll() :array
     {
         $tasks = Task::all();
-        return $tasks;
+        $returnTask = [];
 
+        foreach ($tasks as $task) {
+            $returnTask[] = [
+                "title" => $task->title,
+                "description" => $task->description,
+                "status" => $task->status,
+                "due_date" => $task->due_date,
+            ];
+        }
+        return $returnTask;
     }
 
-    public function find($id) : object
+    public function find($id)
     {
-
-        $task = Task::findOrFail($id);
-        return $task;
-
+        $data = DB::table('tasks')->where('id', $id)->first();
+        return $data;
     }
 
-    public function store($data)
+    public function create($data) : Task
     {
-
-        if(
-        Task::create([
+        return Task::create([
             'title' => $data['title'],
             'description' => $data['description'],
             'status' => $data['status'],
             'due_date' => $data['due_date'],
-        ])
-        ){
-            return true;
-        }else {
-            return false;
+        ]);
+    }
+
+    public function destroy($id) : ?bool
+    {
+        try {
+            $task = Task::find($id);
+            $success = $task->delete();
+        }catch (\Throwable $e){
+            $success = $e->getPrevious();
         }
-
+            $result = $success ?? false;
+            return $result;
     }
 
-    public function destroy($id)
+    public function update($data, $id) : int
     {
-
-        DB::table('tasks')->where('id', $id)->delete();
-    }
-
-    public function update($data, $id) :bool
-    {
-       $result =  DB::table('tasks')
+       return DB::table('tasks')
             ->where('id', $id)
             ->update([
                 'title' => $data['title'],
@@ -59,13 +63,6 @@ class TaskRepository implements TaskRepositoryInterface
                 'status' => $data['status'],
                 'due_date' => $data['due_date'],
             ]);
-
-       if ($result){
-
-        return true;
-       } else {
-
-           return false;
-       }
     }
+
 }

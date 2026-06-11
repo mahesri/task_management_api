@@ -6,8 +6,10 @@ use App\Repositories\TaskRepository;
 use App\Services\Interfaces\TaskServiceInterface;
 use App\Services\TaskService;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\Sanctum;
 
-class AppServiceProvider extends ServiceProvider
+class   AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -23,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 }

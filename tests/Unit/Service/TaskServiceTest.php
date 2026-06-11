@@ -53,11 +53,11 @@ class TaskServiceTest extends TestCase
     {
 
         return [[[
-            "title" => "Go to GK 2 meet the Onna Customers Service",
-            "description" => "Count the necessity size to fit the vertical blind",
+            "title" => "No move hard, just move smarter",
+            "description" => "More focused and consistent",
             "status" => "todo",
             "due_date" => "2026-03-18 01:43:57",
-        ], 39]];
+        ], 44]];
     }
 
     #[TestWith([1])]

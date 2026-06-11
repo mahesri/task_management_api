@@ -2,17 +2,19 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Models\Task;
+
 interface TaskRepositoryInterface
 {
 
-    public function getAll();
+    public function getAll() :array;
 
-    public function find($id) : object;
+    public function find($id);
 
-    public function store($data);
+    public function create($data): Task;
 
-    public function destroy($id);
+    public function destroy($id) : ?bool;
 
-    public function update($data, $id) : bool;
+    public function update($data, $id) : int;
 
 }

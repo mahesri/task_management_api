@@ -2,16 +2,18 @@
 
 namespace App\Services\Interfaces;
 
+use App\Models\Task;
+
 interface TaskServiceInterface
 {
 
     public function getAllTask(): array;
 
-    public function addTask($data) : array;
+    public function addTask($data) : bool;
 
-    public function editTask($id) : array;
+    public function getTask($id);
 
-    public function updateTask($data ,$id) : array;
+    public function updateTask($data ,$id) : int;
 
-    public function deleteTask($id) : void;
+    public function deleteTask($id) : bool;
 }

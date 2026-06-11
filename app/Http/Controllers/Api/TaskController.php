@@ -5,98 +5,83 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
-use App\Models\Task;
-use App\Repositories\TaskRepository;
 use App\Services\TaskService;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
 
     private $taskService;
 
-    /**
-     * @param $taskRepository
-     */
+
     public function __construct(TaskService $taskService)
     {
         $this->taskService = $taskService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function getTasks()
     {
-       $tasks = $this->taskService->getAllTask();
+        $tasks = $this->taskService->getAllTask();
 
-       return response()->json([
-          'success' => $tasks['success'],
-          'message' => $tasks == true ? $tasks['message'] : false ,
-          'data' => $tasks['data']
-           ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreTaskRequest $request)
-    {
-
-        $result = $this->taskService->addTask($request);
+            if (count($tasks) > 0) {
+                $message = "Data retrieved successfully";
+            } else {
+                $message = "Data is empty";
+            }
 
         return response()->json([
-            'success' => $result['success'],
-            'message' => $result['message']
-        ], 201);
+            'success' => $tasks == true ? true : false,
+            'message' => $message,
+            'data' => $tasks
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function store(StoreTaskRequest $request)
+    {
+        $result = $this->taskService->addTask($request);
+        return response()->json([
+            'success' => $result,
+            'message' => $result === true ? "Data stored successfully" : "Server error"
+        ], status: $result === true ? 201 : 500);
+    }
+
+    public function edit(string $id)
+    {
+
+    }
 
     public function show(string $id)
     {
+        $task = $this->taskService->getTask($id);
 
-    }
+        if ($task) {
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $task = $this->taskService->editTask($id);
-        return response()->json([
-            'success' => 'success',
-            'message' => "Task retrieved successfully",
-            'data' => $task
+            return response()->json([
+                'success' => 'success',
+                'message' => "Task retrieved successfully",
+                'data' => $task
             ]);
+
+        } else {
+            return response()->json(status: 204);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateTaskRequest $request, string $id)
     {
-        $result = $this->taskService->updateTask($request, $id);
-        return response()->json($result, 201);
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+        $result = $this->taskService->updateTask($request, $id);
+        return response()->json(["success" => $result === 1 ? true : false,
+                          "message" => $result === 1 ? "Data updated successfully" : "Unprocessable Content"
+            ], status: $result === 1 ? 202 : 422
+        );
+    }
 
     public function destroy(string $id)
     {
-        $this->taskService->deleteTask($id);
-        return response()->json(status: 204);
+        $response = $this->taskService->deleteTask($id);
+
+        return response()->json(
+            status: $response === true ? 201 : 422,
+        );
     }
 }

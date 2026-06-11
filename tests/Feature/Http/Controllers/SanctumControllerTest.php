@@ -16,4 +16,10 @@ class SanctumControllerTest extends \Tests\TestCase
             "password" => "secret"
         ]]];
     }
+
+    public function test_getTasks()
+    {
+        $response = $this->get("/api/tasks");
+        dd($response);
+    }
 }
